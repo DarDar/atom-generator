@@ -1,2 +1,2 @@
-rss-generator
+atom-generator
 =============
