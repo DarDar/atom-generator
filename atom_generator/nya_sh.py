@@ -8,7 +8,7 @@ class AtomGenerator(AtomGeneratorBase):
 
     def update(self):
         if not self.src:
-            raise ValueError('Source is not set')
+            raise ValueError("Source is not set")
 
         self._fg.id(self.src)
         self._fg.link(href=self.src)
@@ -44,7 +44,7 @@ class AtomGenerator(AtomGeneratorBase):
                     fe.author(name=author.group(1))
                     fe.updated(
                         parser.parse(author.group(2))
-                        .replace(tzinfo=tz.gettz('Europe/Moscow'))
+                        .replace(tzinfo=tz.gettz("Europe/Moscow"))
                     )
                     fe.published(fe.updated())
 

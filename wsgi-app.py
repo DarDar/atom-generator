@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 from flask import Flask, Response
-from atom_generator import atom_generator, nya_sh, yousei_raws_org
+from atom_generator import\
+    atom_generator,\
+    nya_sh,\
+    yousei_raws_org
 
 app = Flask(__name__)
 
-app.config.from_object('local_settings')
-APPLICATION_ROOT = app.config['APPLICATION_ROOT'] or ''
+app.config.from_object("local_settings")
+APPLICATION_ROOT = app.config["APPLICATION_ROOT"] or ""
 
 
 @app.route("%s/" % APPLICATION_ROOT)
