@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 from flask import Flask, Response
-from nya_sh import nya_sh
+from atom_generator import atom_generator, nya_sh
 
 app = Flask(__name__)
 
-app.config.from_object('rss-generator_config')
+app.config.from_object('local_settings')
 APPLICATION_ROOT = app.config['APPLICATION_ROOT'] or ''
 
 
@@ -16,7 +16,12 @@ def hello():
 @app.route("%s/nya.sh" % APPLICATION_ROOT)
 @app.route("%s/nya.sh/<sub>" % APPLICATION_ROOT)
 def nya_sh_feed(sub=""):
-    return Response(nya_sh(sub), content_type="text/xml; charset=UTF-8")
+    try:
+        feed = nya_sh.AtomGenerator("http://nya.sh/%s" % sub)
+    except IOError as e:
+        return Response(atom_generator.error_xml(e), content_type="text/xml; charset=UTF-8")
+
+    return Response(feed.feed(), content_type="text/xml; charset=UTF-8")
 
 
 if __name__ == "__main__":
