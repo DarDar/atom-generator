@@ -36,7 +36,7 @@ class AtomGenerator(AtomGeneratorBase):
             if anchor is not None:
                 fe.id(anchor.get("href"))
                 fe.title(torrent.findtext("div/div/div/span") or
-                         anchor.textcontent())
+                         anchor.text_content())
                 fe.link(href=fe.id())
 
             if author:
