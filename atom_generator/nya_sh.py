@@ -18,38 +18,38 @@ class AtomGenerator(AtomGeneratorBase):
 
         page.make_links_absolute()
 
-        title = page.xpath("//title")
+        title = page.findtext("head/title")
         if title:
-            self._fg.title(title[0].text_content())
+            self._fg.title(title)
         else:
             self._fg.title(self.src)
 
-        description = page.xpath("//meta[@name='description']")
-        if description:
-            self._fg.description(description[0].get("content"))
+        description = page.find("head/meta[@name='description']")
+        if description is not None:
+            self._fg.description(description.get("content"))
 
-        for quote in page.xpath("//div[@class='q']"):
+        for quote in page.iterfind("body//div[@class='q']"):
             fe = self._fg.add_entry()
 
-            anchor = quote.xpath("div[@class='sm']/a")
-            if anchor:
-                fe.id(anchor[0].get("href"))
-                fe.title(anchor[0].text_content())
+            anchor = quote.find("div[@class='sm']/a")
+            if anchor is not None:
+                fe.id(anchor.get("href"))
+                fe.title(anchor.text_content())
                 fe.link(href=fe.id())
 
-            author = quote.xpath("div[@class='sm']/i")
+            author = quote.findtext("div[@class='sm']/i")
             if author:
-                m = re.match(u'(.*) \u2014 (.*)', author[0].text_content())
-                if m:
-                    fe.author(name=m.group(1))
+                author = re.match(u'(.*) \u2014 (.*)', author)
+                if author:
+                    fe.author(name=author.group(1))
                     fe.updated(
-                        parser.parse(m.group(2))
+                        parser.parse(author.group(2))
                         .replace(tzinfo=tz.gettz('Europe/Moscow'))
                     )
                     fe.published(fe.updated())
 
-            content = quote.xpath("div[@class='content']")
-            if content:
-                fe.content(etree.tostring(content[0], encoding=unicode))
+            content = quote.find("div[@class='content']")
+            if content is not None:
+                fe.content(etree.tostring(content, encoding=unicode))
 
         return self._fg.atom_str(pretty=True)
