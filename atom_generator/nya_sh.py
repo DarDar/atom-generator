@@ -50,6 +50,7 @@ class AtomGenerator(AtomGeneratorBase):
 
             content = quote.find("div[@class='content']")
             if content is not None:
+                etree.strip_tags(content, "noindex")
                 fe.content(etree.tostring(content, encoding=unicode))
 
         return self._fg.atom_str(pretty=True)
