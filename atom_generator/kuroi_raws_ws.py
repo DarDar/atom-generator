@@ -7,7 +7,7 @@ import re
 
 class AtomGenerator(AtomGeneratorBase):
 
-    def update(self):
+    def _update(self, page=None):
         if not self.src:
             raise ValueError("Source is not set")
 
@@ -15,7 +15,9 @@ class AtomGenerator(AtomGeneratorBase):
         self._fg.link(href=self.src)
         self._fg.language("en")
 
-        page = urllib2.urlopen(self.src).read()
+        if page is None:
+            page = urllib2.urlopen(self.src).read()
+
         re.S = True
         info = re.search(r"<script>\s*var posts = \[(.*)\];\s*</script>", page)
         info = json.loads(info.group(1))

@@ -6,7 +6,7 @@ import re
 
 class AtomGenerator(AtomGeneratorBase):
 
-    def update(self):
+    def _update(self, page=None):
         if not self.src:
             raise ValueError("Source is not set")
 
@@ -14,9 +14,12 @@ class AtomGenerator(AtomGeneratorBase):
         self._fg.link(href=self.src)
         self._fg.language("ru-ru")
 
-        page = html.parse(self.src).getroot()
+        if page is None:
+            page = html.parse(self.src).getroot()
+        else:
+            page = html.fromstring(page)
 
-        page.make_links_absolute()
+        page.make_links_absolute(base_url=self.src)
 
         title = page.findtext("head/title")
         if title:

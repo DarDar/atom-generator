@@ -4,7 +4,7 @@ from lxml import html, etree
 
 class AtomGenerator(AtomGeneratorBase):
 
-    def update(self):
+    def _update(self, page=None):
         if not self.src:
             raise ValueError("Source is not set")
 
@@ -12,9 +12,12 @@ class AtomGenerator(AtomGeneratorBase):
         self._fg.link(href=self.src)
         self._fg.language("en")
 
-        page = html.parse(self.src).getroot()
+        if page is None:
+            page = html.parse(self.src).getroot()
+        else:
+            page = html.fromstring(page)
 
-        page.make_links_absolute()
+        page.make_links_absolute(base_url=self.src)
 
         title = page.findtext("body//div[@id='center']/h2[@class='title']")
         if title:
@@ -43,7 +46,7 @@ class AtomGenerator(AtomGeneratorBase):
                 fe.author(name=author)
 
             content = torrent.find("div")
-            if content:
+            if content is not None:
                 fe.content(etree.tostring(content[0], encoding=unicode))
 
         return self._fg.atom_str(pretty=True)

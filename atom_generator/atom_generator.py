@@ -1,5 +1,7 @@
 from feedgen.feed import FeedGenerator
 from lxml import etree
+import urllib2
+import hashlib
 
 
 def error_xml(e):
@@ -16,14 +18,51 @@ class AtomGeneratorBase:
             feed, doc = self._create_atom(extensions=extensions)
             return etree.tostring(feed, pretty_print=pretty, xml_declaration=True, encoding="utf-8")
 
-    def __init__(self, src=None):
+    def _hash(self, str):
+        return hashlib.sha256(str).hexdigest()
+
+    def _src_key(self):
+        return self.__module__ + ":source:" + self.src
+
+    def _xml_key(self):
+        return self.__module__ + ":xml:" + self.src
+
+    def __init__(self, src=None, cache=None):
         self.src = src
+        self.cache = cache
         self._fg = self._FeedGenerator()
         if src:
             self.update()
 
-    def feed(self):
+    def update(self, force=False):
         try:
-            return self._fg.atom_str(pretty=True)
+            if not self.cache:
+                self._xml = self._update()
+            else:
+                page = urllib2.urlopen(self.src).read()
+                src_hash = self._hash(page)
+
+                if force:
+                    self._xml = self._update(page)
+                else:
+                    if (self.cache.get(self._src_key()) == src_hash):
+                        self._xml = self.cache.get(self._xml_key())
+                        if self._xml is None:
+                            self._xml = self._update(page)
+                        else:
+                            return self._xml
+                    else:
+                        self._xml = self._update(page)
+
+                with self.cache.pipeline() as pipe:
+                    pipe.set(self._src_key(), src_hash)
+                    pipe.set(self._xml_key(), self._fg.atom_str(pretty=True))
+                    pipe.execute()
+
         except ValueError as e:
-            return error_xml(e)
+            self._xml = error_xml(e)
+
+        return self._xml
+
+    def feed(self):
+        return self._xml

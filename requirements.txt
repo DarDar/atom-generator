@@ -3,3 +3,5 @@ lxml
 cssselect
 feedgen
 python-dateutil
+redis
+hiredis
