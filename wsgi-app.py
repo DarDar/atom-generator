@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 from flask import Flask, Response
-from atom_generator import\
-    atom_generator,\
-    nya_sh,\
-    yousei_raws_org,\
-    kuroi_raws_ws
+from atom_generator import (
+    atom_generator,
+    nya_sh,
+    yousei_raws_org,
+    kuroi_raws_ws,
+)
 
 app = Flask(__name__)
 
