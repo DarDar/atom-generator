@@ -39,7 +39,7 @@ class AtomGenerator(AtomGeneratorBase):
 
             author = quote.findtext("div[@class='sm']/i")
             if author:
-                author = re.match(u'(.*) \u2014 (.*)', author)
+                author = re.match(ur"(.*) \u2014 (.*)", author)
                 if author:
                     fe.author(name=author.group(1))
                     fe.updated(
