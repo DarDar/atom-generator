@@ -42,17 +42,11 @@ class AtomGeneratorBase:
                 page = urllib2.urlopen(self.src).read()
                 src_hash = self._hash(page)
 
-                if force:
-                    self._xml = self._update(page)
-                else:
-                    if (self.cache.get(self._src_key()) == src_hash):
-                        self._xml = self.cache.get(self._xml_key())
-                        if self._xml is None:
-                            self._xml = self._update(page)
-                        else:
-                            return self._xml
-                    else:
-                        self._xml = self._update(page)
+                if not force and self.cache.get(self._src_key()) == src_hash:
+                    self._xml = self.cache.get(self._xml_key())
+                    if self._xml is not None:
+                        return self._xml
+                self._xml = self._update(page)
 
                 with self.cache.pipeline() as pipe:
                     pipe.set(self._src_key(), src_hash)
