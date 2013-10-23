@@ -18,11 +18,6 @@ else:
     cache = None
 
 
-@app.route("/")
-def hello():
-    return "Hello World!"
-
-
 @app.route("/nya.sh")
 @app.route("/nya.sh/<sub>")
 def nya_sh_feed(sub=""):
