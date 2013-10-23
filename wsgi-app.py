@@ -11,7 +11,6 @@ from redis import StrictRedis
 app = Flask(__name__)
 
 app.config.from_object("local_settings")
-APPLICATION_ROOT = app.config["APPLICATION_ROOT"] or ""
 
 if app.config["REDIS"]:
     cache = StrictRedis(**app.config["REDIS"])
@@ -19,13 +18,13 @@ else:
     cache = None
 
 
-@app.route("%s/" % APPLICATION_ROOT)
+@app.route("/")
 def hello():
     return "Hello World!"
 
 
-@app.route("%s/nya.sh" % APPLICATION_ROOT)
-@app.route("%s/nya.sh/<sub>" % APPLICATION_ROOT)
+@app.route("/nya.sh")
+@app.route("/nya.sh/<sub>")
 def nya_sh_feed(sub=""):
     try:
         feed = nya_sh.AtomGenerator("http://nya.sh/%s" % sub, cache)
@@ -35,7 +34,7 @@ def nya_sh_feed(sub=""):
     return Response(feed.feed(), content_type="text/xml; charset=UTF-8")
 
 
-@app.route("%s/yousei-raws.org/<path:sub>" % APPLICATION_ROOT)
+@app.route("/yousei-raws.org/<path:sub>")
 def yousei_raws_org_feed(sub=""):
     try:
         feed = yousei_raws_org.AtomGenerator("http://yousei-raws.org/%s" % sub, cache)
@@ -45,7 +44,7 @@ def yousei_raws_org_feed(sub=""):
     return Response(feed.feed(), content_type="text/xml; charset=UTF-8")
 
 
-@app.route("%s/kuroi.raws.ws/<path:sub>" % APPLICATION_ROOT)
+@app.route("/kuroi.raws.ws/<path:sub>")
 def kuroi_raws_ws_feed(sub=""):
     try:
         feed = kuroi_raws_ws.AtomGenerator("http://kuroi.raws.ws/%s" % sub, cache)
