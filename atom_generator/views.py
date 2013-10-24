@@ -1,5 +1,4 @@
 from flask import Response
-from redis import StrictRedis
 from atom_generator import (
     app,
     error_xml,
@@ -9,9 +8,12 @@ from atom_generator import (
 )
 
 if app.config["REDIS"]:
-    cache = StrictRedis(**app.config["REDIS"])
+    from redis import Redis
+    from werkzeug.contrib.cache import RedisCache
+    cache = RedisCache(Redis(**app.config["REDIS"]), default_timeout=60*60*24*7)
 else:
-    cache = None
+    from werkzeug.contrib.cache import SimpleCache
+    cache = SimpleCache(default_timeout=60*60*24*7)
 
 
 @app.route("/nya.sh")

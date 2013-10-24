@@ -39,20 +39,19 @@ class AtomGeneratorBase:
         try:
             if not self.cache:
                 self._xml = self._update()
-            else:
-                page = urllib2.urlopen(self.src).read()
-                src_hash = self._hash(page)
+                return self._xml
 
-                if not force and self.cache.get(self._src_key()) == src_hash:
-                    self._xml = self.cache.get(self._xml_key())
-                    if self._xml is not None:
-                        return self._xml
-                self._xml = self._update(page)
+            page = urllib2.urlopen(self.src).read()
+            src_hash = self._hash(page)
 
-                with self.cache.pipeline() as pipe:
-                    pipe.set(self._src_key(), src_hash)
-                    pipe.set(self._xml_key(), self._fg.atom_str(pretty=True))
-                    pipe.execute()
+            if not force and self.cache.get(self._src_key()) == src_hash:
+                self._xml = self.cache.get(self._xml_key())
+                if self._xml is not None:
+                    return self._xml
+            self._xml = self._update(page)
+
+            self.cache.set_many({self._src_key(): src_hash,
+                                 self._xml_key(): self._fg.atom_str(pretty=True)})
 
         except ValueError as e:
             self._xml = error_xml(e)
