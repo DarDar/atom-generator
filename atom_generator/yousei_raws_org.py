@@ -1,5 +1,5 @@
-from atom_generator import AtomGeneratorBase
 from lxml import html, etree
+from atom_generator import AtomGeneratorBase
 
 
 class AtomGenerator(AtomGeneratorBase):

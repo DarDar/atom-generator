@@ -1,8 +1,8 @@
-from atom_generator import AtomGeneratorBase
 from lxml import html
 import urllib2
 import json
 import re
+from atom_generator import AtomGeneratorBase
 
 
 class AtomGenerator(AtomGeneratorBase):

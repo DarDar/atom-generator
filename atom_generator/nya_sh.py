@@ -1,7 +1,8 @@
-from atom_generator import AtomGeneratorBase, YouTube
 from lxml import html, etree
 from dateutil import parser, tz
 import re
+from atom_generator import AtomGeneratorBase
+from atom_generator.video import YouTube
 
 
 class AtomGenerator(AtomGeneratorBase):
