@@ -54,6 +54,12 @@ class AtomGenerator(AtomGeneratorBase):
             content = quote.find("div[@class='content']")
             if content is not None:
                 etree.strip_tags(content, "noindex")
+                # Replace thumbnail with its original image
+                # <a href="full-size"><img src="thumbnail"/></a> -> <img src="full-size"/>
+                for image in content.xpath(".//a/img[last()=1]"):
+                    anchor = image.getparent()
+                    image.set("src", anchor.get("href"))
+                    anchor.getparent().replace(anchor, image)
                 fe.content(etree.tostring(content, encoding=unicode))
 
         return self._fg.atom_str(pretty=True)
