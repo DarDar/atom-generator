@@ -1,4 +1,4 @@
-from atom_generator import AtomGeneratorBase
+from atom_generator import AtomGeneratorBase, YouTube
 from lxml import html, etree
 from dateutil import parser, tz
 import re
@@ -61,5 +61,29 @@ class AtomGenerator(AtomGeneratorBase):
                     image.set("src", anchor.get("href"))
                     anchor.getparent().replace(anchor, image)
                 fe.content(etree.tostring(content, encoding=unicode))
+            else:
+                y = YouTube()
+                videos = []
+                for video in quote.iterfind("div/object/embed"):
+                    div = etree.Element("div")
+                    anchor = etree.Element("a")
+                    y.video_id = video.get("src")
+                    if y.video_id:
+                        anchor.set("href", y.video())
+                        img = etree.Element("img")
+                        img.set("src", y.thumbnail())
+                        anchor.append(img)
+                    else:
+                        anchor.text = video.get("src")
+                        anchor.set("href", anchor.text)
+                    div.append(anchor)
+                    videos.append(div)
+                if videos:
+                    if len(videos) == 1:
+                        content = videos[0]
+                    else:
+                        content = etree.Element("div")
+                        content.extend(videos)
+                    fe.content(etree.tostring(content, encoding=unicode))
 
         return self._fg.atom_str(pretty=True)
