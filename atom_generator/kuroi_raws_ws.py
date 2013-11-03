@@ -18,8 +18,7 @@ class AtomGenerator(AtomGeneratorBase):
         if page is None:
             page = urllib2.urlopen(self.src).read()
 
-        re.S = True
-        info = re.search(r"<script>\s*var posts = \[(.*)\];\s*</script>", page)
+        info = re.search(r"<script>\s*var posts = \[(.*)\];\s*</script>", page, re.DOTALL)
         info = json.loads(info.group(1))
 
         self._fg.title(info.get("title", self.src))
