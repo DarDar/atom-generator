@@ -11,7 +11,7 @@ def error_xml(e):
     return etree.tostring(error, pretty_print=True, xml_declaration=True, encoding="utf-8")
 
 
-class AtomGeneratorBase:
+class AtomGeneratorBase(object):
 
     # Redefine FeedGenerator.atom_str to return utf-8 string
     class _FeedGenerator(FeedGenerator):
