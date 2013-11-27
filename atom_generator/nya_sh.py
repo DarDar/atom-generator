@@ -1,4 +1,5 @@
 from lxml import html, etree
+from lxml.builder import E
 from dateutil import parser, tz
 import re
 from atom_generator import AtomGeneratorBase
@@ -66,18 +67,12 @@ class AtomGenerator(AtomGeneratorBase):
                 youtube = YouTube()
                 videos = []
                 for video in quote.iterfind("div/object/embed"):
-                    div = etree.Element("div")
-                    anchor = etree.Element("a")
-                    if youtube(video.get("src")):
-                        anchor.set("href", youtube.video())
-                        img = etree.Element("img")
-                        img.set("src", youtube.thumbnail())
-                        anchor.append(img)
+                    video_src = video.get("src")
+                    if youtube(video_src):
+                        link = E.a(E.img(src=youtube.thumbnail(), href=youtube.video()))
                     else:
-                        anchor.text = video.get("src")
-                        anchor.set("href", anchor.text)
-                    div.append(anchor)
-                    videos.append(div)
+                        link = E.a(video_src, href=video_src)
+                    videos.append(E.div(link))
                 if videos:
                     if len(videos) == 1:
                         content = videos[0]
