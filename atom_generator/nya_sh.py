@@ -63,16 +63,15 @@ class AtomGenerator(AtomGeneratorBase):
                     anchor.getparent().replace(anchor, image)
                 fe.content(etree.tostring(content, encoding=unicode))
             else:
-                y = YouTube()
+                youtube = YouTube()
                 videos = []
                 for video in quote.iterfind("div/object/embed"):
                     div = etree.Element("div")
                     anchor = etree.Element("a")
-                    y.video_id = video.get("src")
-                    if y.video_id:
-                        anchor.set("href", y.video())
+                    if youtube(video.get("src")):
+                        anchor.set("href", youtube.video())
                         img = etree.Element("img")
-                        img.set("src", y.thumbnail())
+                        img.set("src", youtube.thumbnail())
                         anchor.append(img)
                     else:
                         anchor.text = video.get("src")

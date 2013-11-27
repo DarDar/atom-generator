@@ -5,13 +5,10 @@ class YouTube(object):
     def __init__(self, url=None):
         self._video_id = self._extract_id(url)
 
-    @property
-    def video_id(self):
+    def __call__(self, url=False):
+        if url is None or url:
+            self._video_id = self._extract_id(url)
         return self._video_id
-
-    @video_id.setter
-    def video_id(self, url):
-        self._video_id = self._extract_id(url)
 
     def _extract_id(self, url=None):
         """Extract youtube video ID
@@ -50,7 +47,7 @@ $"""
         return video_id and video_id.group(1)
 
     def thumbnail(self):
-        return self.video_id and "http://i.ytimg.com/vi/%s/0.jpg" % self.video_id
+        return self._video_id and "http://i.ytimg.com/vi/%s/0.jpg" % self._video_id
 
     def video(self):
-        return self.video_id and "http://www.youtube.com/watch?v=%s" % self.video_id
+        return self._video_id and "http://www.youtube.com/watch?v=%s" % self._video_id
