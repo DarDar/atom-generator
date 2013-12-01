@@ -77,8 +77,7 @@ class AtomGenerator(AtomGeneratorBase):
                     if len(videos) == 1:
                         content = videos[0]
                     else:
-                        content = etree.Element("div")
-                        content.extend(videos)
+                        content = E.div(*videos)
                     fe.content(etree.tostring(content, encoding=unicode))
 
         return self._fg.atom_str(pretty=True)
