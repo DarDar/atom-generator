@@ -1,6 +1,6 @@
 from lxml import html
 import urllib2
-import json
+import simplejson as json
 import re
 from atom_generator import AtomGeneratorBase
 

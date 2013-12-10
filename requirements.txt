@@ -5,3 +5,4 @@ feedgen
 python-dateutil
 redis
 hiredis
+simplejson
