@@ -16,11 +16,11 @@ else:
     cache = SimpleCache(default_timeout=60*60*24*7)
 
 
-@app.route("/nya.sh")
-@app.route("/nya.sh/<sub>")
+@app.route("/nyash.org")
+@app.route("/nyash.org/<sub>")
 def nya_sh_feed(sub=""):
     try:
-        feed = nya_sh.AtomGenerator("http://nya.sh/%s" % sub, cache)
+        feed = nya_sh.AtomGenerator("http://nyash.org/%s" % sub, cache)
     except IOError as e:
         return Response(error_xml(e), mimetype="text/xml")
 
